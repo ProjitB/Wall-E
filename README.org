@@ -5,7 +5,7 @@
  + The first is the algorithm from GFG
  + The second is a code from our textbook for Tic-Tac-Toe
  + The third is a general Minimax from tonypoer.io
-#+BEGIN_SRC algorithm
+#+BEGIN_EXAMPLE
 function minimax(node, depth, isMaximizingPlayer, alpha, beta):
 
     if node is a leaf node :
@@ -30,7 +30,8 @@ function minimax(node, depth, isMaximizingPlayer, alpha, beta):
             if beta <= alpha:
                 break
         return bestVal
-#+END_SRC
+
+#+END_EXAMPLE
 
 #+BEGIN_SRC python
 """Games, or Adversarial Search. (Chapters 6)
