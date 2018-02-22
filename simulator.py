@@ -222,6 +222,7 @@ def player_turn(game_board, old_move, obj, ply, opp, flg):
         if update_status == 'UNSUCCESSFUL':
             WINNER = opp
             MESSAGE = 'INVALID MOVE'
+            print p_move
             pts[opp] = MAX_PTS
             return p_move, WINNER, MESSAGE, pts["P1"], pts["P2"], True, False
 
@@ -366,8 +367,8 @@ if __name__ == '__main__':
         obj1 = Manual_Player()
         obj2 = Manual_Player()
     elif option == '4':
-        obj1 = WallE()
-        obj2 = Random_Player()
+        obj2 = WallE()
+        obj1 = Random_Player()
     elif option == '5':
         obj2 = WallE()
         obj1 = WallE()
