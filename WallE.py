@@ -54,234 +54,25 @@ class WallE:
                 val += self.returnValEval(arr)
         return val
 
+    def localheuristic(self, board):
+        localheuristic = 0
+        for i in range(0, 16, 4):
+            for j in range(0, 16, 4):
+                arr = []
+                for x in range(4):
+                    temp = []
+                    for y in range(4):
+                        temp.append(board.board_status[i + x][j + y])
+                    arr.append(list(temp))
+                localheuristic += self.checkRows(arr) + self.checkColumns(arr) + self.checkDiamond(arr)
+        return localheuristic
+
     def evaluation(self, board, old_move):
         heuristicboard = 0
         #Calculating larger board heuristic
         heuristicboard += self.checkRows(board.block_status) + self.checkColumns(board.block_status) + self.checkDiamond(board.block_status)
-        return heuristicboard
-
-
-
-    def gainEstimate(self, d, x, o):
-        gain = 0
-        if(x == 4 and d == 0 and o == 0):
-            gain = 1000
-        if(o == 4 and d == 0 and x == 0):
-            gain = -1000
-        if(x == 3 and d == 1 and o == 0):
-            gain = 100
-        if(o == 3 and d == 1 and x == 0):
-            gain = -100
-        if(x == 2 and d == 2 and o == 0):
-            gain = 10
-        if(o == 2 and d == 2 and x == 0):
-            gain = -10
-        if(x == 1 and d == 3 and o == 0):
-            gain = 1
-        if(o == 1 and d == 3 and x == 0):
-            gain = -1
-
-        return gain
-
-    def evaluation1(self, board, old_move):
-        blockx = old_move[0] / 4
-        blocky = old_move[1] / 4
-        cellx = old_move[0] % 4
-        celly = old_move[1] % 4
-        block_no = cellx * 4 + celly
-        gain = 0
-
-        for i in range(4):
-            x = 0
-            o = 0
-            d = 0
-            for j in range(4):
-                if board.block_status[i][j] == '-':
-                    d += 1
-                elif board.block_status[i][j] == 'o':
-                    o += 1
-                elif board.block_status[i][j] == 'x':
-                    x += 1
-
-            if x == 4:
-                gain = 100 * self.gainEstimate(d, x, o)
-                return gain
-            elif o == 4:
-                gain = 100 * self.gainEstimate(d, x, o)
-                return gain
-            else:
-                gain += 100 * self.gainEstimate(d, x, o)
-
-
-        for j in range(0, 4):
-            x = 0
-            o = 0
-            d = 0
-            for i in range(0, 4):
-                if board.block_status[i][j] == '-':
-                    d += 1
-                elif board.block_status[i][j] == 'o':
-                    o += 1
-                elif board.block_status[i][j] == 'x':
-                    x += 1
-
-            if x == 4 :
-                gain = 100 * self.gainEstimate(d, x, o)
-                return gain
-            elif o == 4 :
-                gain = 100 * self.gainEstimate(d, x, o)
-                return gain
-            else:
-                gain += 100 * self.gainEstimate(d, x, o)
-
-        x = 0
-        o = 0
-        d = 0
-        for i in range(0, 4):
-            if board.block_status[i][i] == '-':
-                d += 1
-            elif board.block_status[i][i] == 'o':
-                o += 1
-            elif board.block_status[i][i] == 'x':
-                x += 1
-
-        if x == 4 :
-            gain = 100 * self.gainEstimate(d, x, o)
-            return gain
-        elif o == 4 :
-            gain = 100 * self.gainEstimate(d, x, o)
-            return gain
-        else :
-            gain += 100 * self.gainEstimate(d, x, o)
-
-        x = 0
-        o = 0
-        d = 0
-        for i in range(0, 4):
-            if board.block_status[i][3 - i] == '-':
-                d += 1
-            elif board.block_status[i][3 - i] == 'o':
-                o += 1
-            elif board.block_status[i][3 - i] == 'x':
-                x += 1
-
-        if x == 4:
-            gain = 100 * self.gainEstimate(d, x, o)
-            return gain
-        elif o == 4:
-            gain = 100 * self.gainEstimate(d, x, o)
-            return gain
-        else :
-            gain += 100 * self.gainEstimate(d, x, o)
-
-        for checkx in range(0, 13, 4):
-            for checky in range(0, 13, 4):
-                local_gain = 0
-                local_flag = 0
-                for i in range(0, 4):
-                    x = 0
-                    o = 0
-                    d = 0
-                    for j in range(0, 4):
-                        if board.board_status[checkx + i][checky + j] == '-':
-                            d += 1
-                        elif board.board_status[checkx + i][checky + j] == 'o':
-                            o += 1
-                        elif board.board_status[checkx + i][checky + j] == 'x':
-                            x += 1
-
-                    if x == 4:
-                        local_gain = self.gainEstimate(d, x, o)
-                        local_flag = 1
-                        break
-                    elif o == 4:
-                        local_gain = self.gainEstimate(d, x, o)
-                        local_flag = 1
-                        break
-                    else:
-                        local_gain += self.gainEstimate(d, x, o)
-
-                    if local_flag == 1:
-                        break
-                if local_flag == 1:
-                    gain += local_gain
-                    continue
-
-                for j in range(0, 4):
-                    x = 0
-                    o = 0
-                    d = 0
-                    for i in range(0, 4):
-                        if board.board_status[checkx + i][checky + j] == '-':
-                            d += 1
-                        elif board.board_status[checkx + i][checky + j] == 'o':
-                            o += 1
-                        elif board.board_status[checkx + i][checky + j] == 'x':
-                            x += 1
-
-                    if x == 4 :
-                        local_gain = self.gainEstimate(d, x, o)
-                        local_flag = 1
-                        break
-                    elif o == 4 :
-                        local_gain = self.gainEstimate(d, x, o)
-                        local_flag = 1
-                        break
-                    else:
-                        local_gain += self.gainEstimate(d, x, o)
-                    if local_flag == 1:
-                        break
-                if local_flag == 1:
-                    gain += local_gain
-                    continue
-
-                x = 0
-                o = 0
-                d = 0
-                for i in range(0, 4):
-                    if board.board_status[checkx + i][checky + i] == '-':
-                        d += 1
-                    elif board.board_status[checkx + i][checky + i] == 'o':
-                        o += 1
-                    elif board.board_status[checkx + i][checky + i] == 'x':
-                        x += 1
-
-                if x == 4 :
-                    local_gain = self.gainEstimate(d, x, o)
-                    local_flag = 1
-                elif o == 4 :
-                    local_gain = self.gainEstimate(d, x, o)
-                    local_flag = 1
-                else :
-                    local_gain += self.gainEstimate(d, x, o)
-
-                if local_flag == 1:
-                    gain += local_gain
-                    continue
-
-                x = 0
-                o = 0
-                d = 0
-                for i in range(0, 4):
-                    if board.board_status[checkx + i][checky + 3 - i] == '-':
-                        d += 1
-                    elif board.board_status[checkx + i][checky + 3 - i] == 'o':
-                        o += 1
-                    elif board.board_status[checkx + i][checky + 3 - i] == 'x':
-                        x += 1
-
-                if x == 4:
-                    local_gain = self.gainEstimate(d, x, o)
-                    local_flag = 1
-                elif o == 4:
-                    local_gain = self.gainEstimate(d, x, o)
-                    local_flag = 1
-                else :
-                    local_gain += self.gainEstimate(d, x, o)
-
-                gain += local_gain
-
-        return gain
+        heuristiclocal = self.localheuristic(board)
+        return 2*heuristicboard + heuristiclocal
 
     def flagtonum(self, flag):
         if flag == 'x':
