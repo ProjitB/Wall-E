@@ -8,30 +8,82 @@ class WallE:
     def __init__(self):
         self.flag = 1
         self.next_move = (0, 0)
+        self.maxdepth = 3
+
+    def returnValEval(self, arr):
+         return arr[0]**arr[0] - arr[1]**arr[1]
+
+    def returnCount(self, cell, arr):
+        if cell == 'x':
+            arr[0] += 1
+        if cell == 'o':
+            arr[1] += 1
+        if cell == 'd':
+            arr[2] += 1
+        if cell == '-':
+            arr[3] += 1
+        return arr
+
+    def checkRows(self, array):
+        val = 0
+        for i in range(4):
+            arr = [0, 0, 0, 0]
+            for j in range(4):
+                arr = self.returnCount(array[i][j], arr)
+            val += self.returnValEval(arr)
+        return val
+
+    def checkColumns(self, array):
+        val = 0
+        for j in range(4):
+            arr = [0, 0, 0, 0]
+            for i in range(4):
+                arr = self.returnCount(array[i][j], arr)
+            val += self.returnValEval(arr)
+        return val
+
+    def checkDiamond(self, array):
+        val = 0
+        for i in range(2):
+            for j in range(1, 3):
+                arr = [0, 0, 0, 0]
+                arr = self.returnCount(array[i][j], arr)
+                arr = self.returnCount(array[i + 1][j - 1], arr)
+                arr = self.returnCount(array[i + 1][j + 1], arr)
+                arr = self.returnCount(array[i + 2][j], arr)
+                val += self.returnValEval(arr)
+        return val
+
+    def evaluation(self, board, old_move):
+        heuristicboard = 0
+        #Calculating larger board heuristic
+        heuristicboard += self.checkRows(board.block_status) + self.checkColumns(board.block_status) + self.checkDiamond(board.block_status)
+        return heuristicboard
 
 
-    def gainEstimate(self, countd, countx, counto):
+
+    def gainEstimate(self, d, x, o):
         gain = 0
-        if(countx == 4 and countd == 0 and counto == 0):
+        if(x == 4 and d == 0 and o == 0):
             gain = 1000
-        if(counto == 4 and countd == 0 and countx == 0):
+        if(o == 4 and d == 0 and x == 0):
             gain = -1000
-        if(countx == 3 and countd == 1 and counto == 0):
+        if(x == 3 and d == 1 and o == 0):
             gain = 100
-        if(counto == 3 and countd == 1 and countx == 0):
+        if(o == 3 and d == 1 and x == 0):
             gain = -100
-        if(countx == 2 and countd == 2 and counto == 0):
+        if(x == 2 and d == 2 and o == 0):
             gain = 10
-        if(counto == 2 and countd == 2 and countx == 0):
+        if(o == 2 and d == 2 and x == 0):
             gain = -10
-        if(countx == 1 and countd == 3 and counto == 0):
+        if(x == 1 and d == 3 and o == 0):
             gain = 1
-        if(counto == 1 and countd == 3 and countx == 0):
+        if(o == 1 and d == 3 and x == 0):
             gain = -1
 
         return gain
 
-    def evaluation(self, board, old_move):
+    def evaluation1(self, board, old_move):
         blockx = old_move[0] / 4
         blocky = old_move[1] / 4
         cellx = old_move[0] % 4
@@ -39,115 +91,115 @@ class WallE:
         block_no = cellx * 4 + celly
         gain = 0
 
-        for i in range(0, 4):
-            countx = 0
-            counto = 0
-            countd = 0
-            for j in range(0, 4):
+        for i in range(4):
+            x = 0
+            o = 0
+            d = 0
+            for j in range(4):
                 if board.block_status[i][j] == '-':
-                    countd += 1
+                    d += 1
                 elif board.block_status[i][j] == 'o':
-                    counto += 1
+                    o += 1
                 elif board.block_status[i][j] == 'x':
-                    countx += 1
+                    x += 1
 
-            if countx == 4:
-                gain = 100 * self.gainEstimate(countd, countx, counto)
+            if x == 4:
+                gain = 100 * self.gainEstimate(d, x, o)
                 return gain
-            elif counto == 4:
-                gain = 100 * self.gainEstimate(countd, countx, counto)
+            elif o == 4:
+                gain = 100 * self.gainEstimate(d, x, o)
                 return gain
             else:
-                gain += 100 * self.gainEstimate(countd, countx, counto)
+                gain += 100 * self.gainEstimate(d, x, o)
 
 
         for j in range(0, 4):
-            countx = 0
-            counto = 0
-            countd = 0
+            x = 0
+            o = 0
+            d = 0
             for i in range(0, 4):
                 if board.block_status[i][j] == '-':
-                    countd += 1
+                    d += 1
                 elif board.block_status[i][j] == 'o':
-                    counto += 1
+                    o += 1
                 elif board.block_status[i][j] == 'x':
-                    countx += 1
+                    x += 1
 
-            if countx == 4 :
-                gain = 100 * self.gainEstimate(countd, countx, counto)
+            if x == 4 :
+                gain = 100 * self.gainEstimate(d, x, o)
                 return gain
-            elif counto == 4 :
-                gain = 100 * self.gainEstimate(countd, countx, counto)
+            elif o == 4 :
+                gain = 100 * self.gainEstimate(d, x, o)
                 return gain
             else:
-                gain += 100 * self.gainEstimate(countd, countx, counto)
+                gain += 100 * self.gainEstimate(d, x, o)
 
-        countx = 0
-        counto = 0
-        countd = 0
+        x = 0
+        o = 0
+        d = 0
         for i in range(0, 4):
             if board.block_status[i][i] == '-':
-                countd += 1
+                d += 1
             elif board.block_status[i][i] == 'o':
-                counto += 1
+                o += 1
             elif board.block_status[i][i] == 'x':
-                countx += 1
+                x += 1
 
-        if countx == 4 :
-            gain = 100 * self.gainEstimate(countd, countx, counto)
+        if x == 4 :
+            gain = 100 * self.gainEstimate(d, x, o)
             return gain
-        elif counto == 4 :
-            gain = 100 * self.gainEstimate(countd, countx, counto)
+        elif o == 4 :
+            gain = 100 * self.gainEstimate(d, x, o)
             return gain
         else :
-            gain += 100 * self.gainEstimate(countd, countx, counto)
+            gain += 100 * self.gainEstimate(d, x, o)
 
-        countx = 0
-        counto = 0
-        countd = 0
+        x = 0
+        o = 0
+        d = 0
         for i in range(0, 4):
             if board.block_status[i][3 - i] == '-':
-                countd += 1
+                d += 1
             elif board.block_status[i][3 - i] == 'o':
-                counto += 1
+                o += 1
             elif board.block_status[i][3 - i] == 'x':
-                countx += 1
+                x += 1
 
-        if countx == 4:
-            gain = 100 * self.gainEstimate(countd, countx, counto)
+        if x == 4:
+            gain = 100 * self.gainEstimate(d, x, o)
             return gain
-        elif counto == 4:
-            gain = 100 * self.gainEstimate(countd, countx, counto)
+        elif o == 4:
+            gain = 100 * self.gainEstimate(d, x, o)
             return gain
         else :
-            gain += 100 * self.gainEstimate(countd, countx, counto)
+            gain += 100 * self.gainEstimate(d, x, o)
 
         for checkx in range(0, 13, 4):
             for checky in range(0, 13, 4):
                 local_gain = 0
                 local_flag = 0
                 for i in range(0, 4):
-                    countx = 0
-                    counto = 0
-                    countd = 0
+                    x = 0
+                    o = 0
+                    d = 0
                     for j in range(0, 4):
                         if board.board_status[checkx + i][checky + j] == '-':
-                            countd += 1
+                            d += 1
                         elif board.board_status[checkx + i][checky + j] == 'o':
-                            counto += 1
+                            o += 1
                         elif board.board_status[checkx + i][checky + j] == 'x':
-                            countx += 1
+                            x += 1
 
-                    if countx == 4:
-                        local_gain = self.gainEstimate(countd, countx, counto)
+                    if x == 4:
+                        local_gain = self.gainEstimate(d, x, o)
                         local_flag = 1
                         break
-                    elif counto == 4:
-                        local_gain = self.gainEstimate(countd, countx, counto)
+                    elif o == 4:
+                        local_gain = self.gainEstimate(d, x, o)
                         local_flag = 1
                         break
                     else:
-                        local_gain += self.gainEstimate(countd, countx, counto)
+                        local_gain += self.gainEstimate(d, x, o)
 
                     if local_flag == 1:
                         break
@@ -156,76 +208,76 @@ class WallE:
                     continue
 
                 for j in range(0, 4):
-                    countx = 0
-                    counto = 0
-                    countd = 0
+                    x = 0
+                    o = 0
+                    d = 0
                     for i in range(0, 4):
                         if board.board_status[checkx + i][checky + j] == '-':
-                            countd += 1
+                            d += 1
                         elif board.board_status[checkx + i][checky + j] == 'o':
-                            counto += 1
+                            o += 1
                         elif board.board_status[checkx + i][checky + j] == 'x':
-                            countx += 1
+                            x += 1
 
-                    if countx == 4 :
-                        local_gain = self.gainEstimate(countd, countx, counto)
+                    if x == 4 :
+                        local_gain = self.gainEstimate(d, x, o)
                         local_flag = 1
                         break
-                    elif counto == 4 :
-                        local_gain = self.gainEstimate(countd, countx, counto)
+                    elif o == 4 :
+                        local_gain = self.gainEstimate(d, x, o)
                         local_flag = 1
                         break
                     else:
-                        local_gain += self.gainEstimate(countd, countx, counto)
+                        local_gain += self.gainEstimate(d, x, o)
                     if local_flag == 1:
                         break
                 if local_flag == 1:
                     gain += local_gain
                     continue
 
-                countx = 0
-                counto = 0
-                countd = 0
+                x = 0
+                o = 0
+                d = 0
                 for i in range(0, 4):
                     if board.board_status[checkx + i][checky + i] == '-':
-                        countd += 1
+                        d += 1
                     elif board.board_status[checkx + i][checky + i] == 'o':
-                        counto += 1
+                        o += 1
                     elif board.board_status[checkx + i][checky + i] == 'x':
-                        countx += 1
+                        x += 1
 
-                if countx == 4 :
-                    local_gain = self.gainEstimate(countd, countx, counto)
+                if x == 4 :
+                    local_gain = self.gainEstimate(d, x, o)
                     local_flag = 1
-                elif counto == 4 :
-                    local_gain = self.gainEstimate(countd, countx, counto)
+                elif o == 4 :
+                    local_gain = self.gainEstimate(d, x, o)
                     local_flag = 1
                 else :
-                    local_gain += self.gainEstimate(countd, countx, counto)
+                    local_gain += self.gainEstimate(d, x, o)
 
                 if local_flag == 1:
                     gain += local_gain
                     continue
 
-                countx = 0
-                counto = 0
-                countd = 0
+                x = 0
+                o = 0
+                d = 0
                 for i in range(0, 4):
                     if board.board_status[checkx + i][checky + 3 - i] == '-':
-                        countd += 1
+                        d += 1
                     elif board.board_status[checkx + i][checky + 3 - i] == 'o':
-                        counto += 1
+                        o += 1
                     elif board.board_status[checkx + i][checky + 3 - i] == 'x':
-                        countx += 1
+                        x += 1
 
-                if countx == 4:
-                    local_gain = self.gainEstimate(countd, countx, counto)
+                if x == 4:
+                    local_gain = self.gainEstimate(d, x, o)
                     local_flag = 1
-                elif counto == 4:
-                    local_gain = self.gainEstimate(countd, countx, counto)
+                elif o == 4:
+                    local_gain = self.gainEstimate(d, x, o)
                     local_flag = 1
                 else :
-                    local_gain += self.gainEstimate(countd, countx, counto)
+                    local_gain += self.gainEstimate(d, x, o)
 
                 gain += local_gain
 
@@ -250,7 +302,8 @@ class WallE:
 
 
     def checkend(self, board, old_move, depth):
-        if depth == 3:
+        check = board.find_terminal_state()
+        if depth == self.maxdepth or check[0] != 'CONTINUE':
             return (1, (self.flag + (self.flag - 1)) * self.evaluation(board, old_move))
         else:
             return (0, 0)
