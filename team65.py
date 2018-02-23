@@ -10,8 +10,29 @@ class Team65:
         self.next_move = (0, 0)
         self.maxdepth = 3
 
+
+
+
     def returnValEval(self, arr):
-         return arr[0]**arr[0] - arr[1]**arr[1]
+        heuristic = 0
+        if(arr[0] == 4 and arr[3] == 0 and arr[1] == 0):
+            heuristic = 1024
+        if(arr[1] == 4 and arr[3] == 0 and arr[0] == 0):
+            heuristic = -1024
+        if(arr[0] == 3 and arr[3] == 1 and arr[1] == 0):
+            heuristic = 256
+        if(arr[1] == 3 and arr[3] == 1 and arr[0] == 0):
+            heuristic = -256
+        if(arr[0] == 2 and arr[3] == 2 and arr[1] == 0):
+            heuristic = 32
+        if(arr[1] == 2 and arr[3] == 2 and arr[0] == 0):
+            heuristic = -32
+        if(arr[0] == 1 and arr[3] == 3 and arr[1] == 0):
+            heuristic = 2
+        if(arr[1] == 1 and arr[3] == 3 and arr[0] == 0):
+            heuristic = -2
+
+        return heuristic
 
     def returnCount(self, cell, arr):
         if cell == 'x':
