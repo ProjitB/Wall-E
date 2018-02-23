@@ -4,7 +4,7 @@ import signal
 import time
 import copy
 import traceback
-from WallE import WallE
+from team65 import Team65
 
 TIME = 16
 MAX_PTS = 68
@@ -367,11 +367,11 @@ if __name__ == '__main__':
         obj1 = Manual_Player()
         obj2 = Manual_Player()
     elif option == '4':
-        obj2 = WallE()
+        obj2 = Team65()
         obj1 = Random_Player()
     elif option == '5':
-        obj2 = WallE()
-        obj1 = WallE()
+        obj2 = Team65()
+        obj1 = Team65()
     else:
         print 'Invalid option'
         sys.exit(1)

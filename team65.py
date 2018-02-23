@@ -4,7 +4,7 @@ import signal
 import time
 import copy
 
-class WallE:
+class Team65:
     def __init__(self):
         self.flag = 1
         self.next_move = (0, 0)
@@ -67,12 +67,38 @@ class WallE:
                 localheuristic += self.checkRows(arr) + self.checkColumns(arr) + self.checkDiamond(arr)
         return localheuristic
 
+    def weightedEval(self, board):
+        weight = [[6, 4, 4, 6], [4, 3, 3, 4], [4, 3, 3, 4], [6, 4, 4, 6]]
+        val = 0
+        for i in range(4):
+            for j in range(4):
+                if board.block_status[i][j] == 'x':
+                    val += 100 * weight[i][j]
+                if board.block_status[i][j] == 'o':
+                    val += -100 * weight[i][j]
+        return val
+
+    def countCenter(self, board, opflag):
+        count = 0
+        for i in range(1, 3):
+            for j in range(1, 3):
+                if board.block_status[i][j] == opflag:
+                    count += 1
+        if count >= 2:
+            return 1
+        else:
+            return 0
+
     def evaluation(self, board, old_move):
         heuristicboard = 0
+        heuristicweighted = 0
         #Calculating larger board heuristic
         heuristicboard += self.checkRows(board.block_status) + self.checkColumns(board.block_status) + self.checkDiamond(board.block_status)
         heuristiclocal = self.localheuristic(board)
-        return 2*heuristicboard + heuristiclocal
+
+        if self.countCenter(board, self.numtoflag(1 - self.flag)):
+            heuristicweighted = self.weightedEval(board)
+        return 2*heuristicboard + heuristiclocal + heuristicweighted
 
     def flagtonum(self, flag):
         if flag == 'x':
