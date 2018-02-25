@@ -10,9 +10,6 @@ class Team65:
         self.next_move = (0, 0)
         self.maxdepth = 3
 
-
-
-
     def returnValEval(self, arr):
         heuristic = 0
         if(arr[0] == 4 and arr[3] == 0 and arr[1] == 0):
@@ -31,7 +28,6 @@ class Team65:
             heuristic = 2
         if(arr[1] == 1 and arr[3] == 3 and arr[0] == 0):
             heuristic = -2
-
         return heuristic
 
     def returnCount(self, cell, arr):
@@ -119,7 +115,7 @@ class Team65:
 
         if self.countCenter(board, self.numtoflag(1 - self.flag)):
             heuristicweighted = self.weightedEval(board)
-        return 2*heuristicboard + heuristiclocal + heuristicweighted
+        return 2 * heuristicboard + heuristiclocal + heuristicweighted
 
     def flagtonum(self, flag):
         if flag == 'x':
