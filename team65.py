@@ -9,6 +9,7 @@ class Team65:
         self.flag = 1
         self.next_move = (0, 0)
         self.maxdepth = 3
+        self.time = 0
 
     def returnValEval(self, arr):
         heuristic = 0
@@ -28,6 +29,7 @@ class Team65:
             heuristic = 2
         if(arr[1] == 1 and arr[3] == 3 and arr[0] == 0):
             heuristic = -2
+
         return heuristic
 
     def returnCount(self, cell, arr):
@@ -115,7 +117,7 @@ class Team65:
 
         if self.countCenter(board, self.numtoflag(1 - self.flag)):
             heuristicweighted = self.weightedEval(board)
-        return 2 * heuristicboard + heuristiclocal + heuristicweighted
+        return 2*heuristicboard + heuristiclocal + heuristicweighted
 
     def flagtonum(self, flag):
         if flag == 'x':
@@ -131,9 +133,9 @@ class Team65:
 
     def move(self, board, old_move, flag):
         self.flag = self.flagtonum(flag)
+        self.time = time.time()
         self.minimax(board, old_move, 0, -999999999, 999999999, True, self.numtoflag(self.flag))
         return (self.next_move[0], self.next_move[1])
-
 
     def checkend(self, board, old_move, depth):
         check = board.find_terminal_state()
@@ -149,10 +151,12 @@ class Team65:
         value = Player * -999999999 + (1 - Player) * 999999999
         possibilities = board.find_valid_move_cells(old_move)
         random.shuffle(possibilities)
-
         for move in possibilities:
             board.update(old_move, move, flag)
-            child = self.minimax(board, move, depth + 1, alpha, beta, 1 - Player, self.numtoflag(1 - self.flagtonum(flag)))
+            nextp = 1 - Player
+            if board.board_status[old_move[0]][old_move[1]] != flag and board.block_status[move[0] / 4][move[1] / 4] == flag:
+                nextp = Player
+            child = self.minimax(board, move, depth + 1, alpha, beta, nextp, self.numtoflag(1 - self.flagtonum(flag)))
             board.board_status[move[0]][move[1]] = '-'
             board.block_status[move[0] / 4][move[1] / 4] = '-'
 
