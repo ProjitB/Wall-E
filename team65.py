@@ -12,6 +12,7 @@ class Team65:
         self.time = 0
 
     def returnValEval(self, arr):
+        # arr[0] => 'x' ... arr[1] => 'o' ... arr[2] => 'd' ... arr[3] => '-'
         heuristic = 0
         if(arr[0] == 4 and arr[3] == 0 and arr[1] == 0):
             heuristic = 1024
@@ -29,6 +30,11 @@ class Team65:
             heuristic = 2
         if(arr[1] == 1 and arr[3] == 3 and arr[0] == 0):
             heuristic = -2
+
+        if(arr[0] == 1 and arr[2] == 3):
+            heuristic = 512
+        if(arr[1] == 1 and arr[0] == 3):
+            heuristic = -512
 
         return heuristic
 
