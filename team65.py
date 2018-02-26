@@ -9,7 +9,6 @@ class Team65:
         self.flag = 1
         self.next_move = (0, 0)
         self.maxdepth = 3
-        self.time = 0
 
     def returnValEval(self, arr):
         # arr[0] => 'x' ... arr[1] => 'o' ... arr[2] => 'd' ... arr[3] => '-'
@@ -157,6 +156,7 @@ class Team65:
         value = Player * -999999999 + (1 - Player) * 999999999
         possibilities = board.find_valid_move_cells(old_move)
         random.shuffle(possibilities)
+
         for move in possibilities:
             board.update(old_move, move, flag)
             nextp = 1 - Player
