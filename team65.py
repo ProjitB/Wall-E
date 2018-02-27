@@ -30,7 +30,7 @@ class Team65:
         if(arr[1] == 1 and arr[3] == 3 and arr[0] == 0):
             heuristic = -2
 
-        if(arr[0] == 1 and arr[2] == 3):
+        if(arr[0] == 1 and arr[1] == 3):
             heuristic = 512
         if(arr[1] == 1 and arr[0] == 3):
             heuristic = -512
@@ -120,9 +120,9 @@ class Team65:
         heuristicboard += self.checkRows(board.block_status) + self.checkColumns(board.block_status) + self.checkDiamond(board.block_status)
         heuristiclocal = self.localheuristic(board)
 
-        if self.countCenter(board, self.numtoflag(1 - self.flag)):
-            heuristicweighted = self.weightedEval(board)
-        return 2*heuristicboard + heuristiclocal + heuristicweighted
+        #if self.countCenter(board, self.numtoflag(1 - self.flag)):
+        heuristicweighted = self.weightedEval(board)
+        return 16*heuristicboard + heuristiclocal + heuristicweighted
 
     def flagtonum(self, flag):
         if flag == 'x':
@@ -165,7 +165,6 @@ class Team65:
             child = self.minimax(board, move, depth + 1, alpha, beta, nextp, self.numtoflag(1 - self.flagtonum(flag)))
             board.board_status[move[0]][move[1]] = '-'
             board.block_status[move[0] / 4][move[1] / 4] = '-'
-
             if Player:
                 if child > value:
                     value = child
